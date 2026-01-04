@@ -86,20 +86,22 @@
       resize: vertical;
     }
 
+    /* ✅ FIXED: CENTERED BUTTON */
     .actions {
       margin-top: 24px;
-      text-align: right;
+      text-align: center;
     }
 
     button {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 28px;
       font-size: 15px;
       font-weight: 500;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      min-width: 220px;
     }
 
     button:disabled {
@@ -268,8 +270,6 @@ function reset(btn) {
   btn.textContent = "Analyze Intent";
 }
 
-/* ---- Logic ---- */
-
 function detectKeywordIntent(k) {
   const t = ["buy","price","pricing","sign up","download"];
   const c = ["best","compare","vs","review","tools","benefits"];
@@ -315,5 +315,6 @@ function detectContentAngles(c) {
   return a.slice(0,4);
 }
 </script>
+
 </body>
 </html>
