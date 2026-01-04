@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <!-- Google tag (gtag.js) — DO NOT CHANGE -->
+  <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -119,7 +118,9 @@
     .commercial { background: #fef3c7; color: #92400e; }
     .transactional { background: #ede9fe; color: #5b21b6; }
 
-    ul { margin-top: 8px; }
+    .high { color: #059669; }
+    .medium { color: #d97706; }
+    .low { color: #dc2626; }
 
     footer {
       margin-top: 48px;
@@ -141,7 +142,7 @@
 
 <label>
   Target Keyword
-  <input id="keyword" placeholder="e.g. benefits of land ownership">
+  <input id="keyword" placeholder="e.g. why invest in land">
 </label>
 
 <label>
@@ -165,99 +166,76 @@ function analyze() {
   const output = document.getElementById('output');
   const button = document.getElementById('analyzeBtn');
 
-  output.innerHTML = "";
-  button.disabled = true;
-  button.innerText = "Analyzing...";
+  try {
+    output.innerHTML = "";
+    button.disabled = true;
+    button.innerText = "Analyzing...";
 
-  const keyword = document.getElementById('keyword').value.toLowerCase().trim();
-  const rawContent = document.getElementById('content').value;
-const content = rawContent
-  .toLowerCase()
-  .slice(0, 6000); // limit processing size (~1000–1200 words)
+    const keyword = document.getElementById('keyword').value.toLowerCase().trim();
+    const rawContent = document.getElementById('content').value;
+    const content = rawContent.toLowerCase().slice(0, 6000);
 
+    if (!keyword || !content) {
+      output.innerHTML = "<p>Please enter both keyword and page content.</p>";
+      return;
+    }
 
-  if (!keyword || !content) {
-    output.innerHTML = "<p>Please enter both keyword and page content.</p>";
+    const keywordData = detectKeywordIntent(keyword);
+    const pageData = detectPageIntent(content);
+    const verdict = getVerdict(keywordData.intent, pageData.intent);
+    const fixes = getFixes(keywordData.intent, pageData.intent);
+    const confidence = getConfidence(keywordData, pageData);
+
+    output.innerHTML = `
+      <div class="result ${verdict.class}">
+        <h2>
+          ${verdict.label} —
+          <span class="${confidence.toLowerCase()}">
+            ${confidence} Confidence
+          </span>
+        </h2>
+
+        <p><strong>Keyword Intent:</strong>
+          <span class="badge ${keywordData.intent.toLowerCase()}">
+            ${keywordData.intent}
+          </span>
+        </p>
+        <ul>${keywordData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+
+        <p><strong>Page Intent:</strong>
+          <span class="badge ${pageData.intent.toLowerCase()}">
+            ${pageData.intent}
+          </span>
+        </p>
+        <ul>${pageData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+
+        <h3>How to Fix This</h3>
+        <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
+      </div>
+    `;
+  } catch (e) {
+    console.error(e);
+    output.innerHTML = "<p>Something went wrong. Please try again.</p>";
+  } finally {
     button.disabled = false;
     button.innerText = "Analyze Intent";
-    return;
   }
-
-  const keywordData = detectKeywordIntent(keyword);
-  const pageData = detectPageIntent(content);
-  const verdict = getVerdict(keywordData.intent, pageData.intent);
-  const fixes = getFixes(keywordData.intent, pageData.intent);
-
-  output.innerHTML = `
-    <div class="result ${verdict.class}">
-      <h2>${verdict.label}</h2>
-
-      <p><strong>Keyword Intent:</strong>
-        <span class="badge ${keywordData.intent.toLowerCase()}">${keywordData.intent}</span>
-      </p>
-      <ul>${keywordData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
-
-      <p><strong>Page Intent:</strong>
-        <span class="badge ${pageData.intent.toLowerCase()}">${pageData.intent}</span>
-      </p>
-      <ul>${pageData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
-
-      <h3>How to Fix This</h3>
-      <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
-    </div>
-  `;
-
-  button.disabled = false;
-  button.innerText = "Analyze Intent";
 }
 
-function getFixes(keywordIntent, pageIntent) {
-  ...
-}
-
-function getConfidence(keywordData, pageData) {
-  let score = 0;
-
-  score += keywordData.reasons.length * 2;
-  score += pageData.reasons.length * 2;
-
-  if (keywordData.intent === "Transactional" || pageData.intent === "Transactional") {
-    score += 2;
-  }
-
-  if (score >= 6) return "High";
-  if (score >= 4) return "Medium";
-  return "Low";
-}
-
-function analyze() {
-  ...
-}
-
-  
 function detectKeywordIntent(keyword) {
   let reasons = [];
+  const transactional = ["buy","pricing","price","cost","sign up","download","trial"];
+  const commercial = ["best","top","vs","compare","comparison","tools","software","review","benefits"];
 
-  const transactionalWords = [
-    "buy", "pricing", "price", "cost",
-    "sign up", "download", "trial"
-  ];
-
-  const commercialWords = [
-    "best", "top", "vs", "compare",
-    "comparison", "tools", "software",
-    "review", "benefits"
-  ];
-
-  for (let word of transactionalWords) {
-    if (keyword.includes(word)) {
+  for (let w of transactional) {
+    if (keyword.includes(w)) {
       reasons.push("Transactional modifier detected");
       return { intent: "Transactional", reasons };
     }
   }
 
-  for (let word of commercialWords) {
-    if (keyword.includes(word)) {
+  for (let w of commercial) {
+    if (keyword.includes(w)) {
       reasons.push("Commercial modifier detected");
       return { intent: "Commercial", reasons };
     }
@@ -269,32 +247,24 @@ function detectKeywordIntent(keyword) {
 
 function detectPageIntent(content) {
   let reasons = [];
+  const transactional = ["buy","pricing","sign up","get started","money-back","order"];
+  const commercial = ["compare","best","vs","alternatives","features","benefits","reviews"];
 
-  const transactionalWords = [
-    "buy", "pricing", "price", "sign up",
-    "get started", "money-back", "order"
-  ];
-
-  const commercialWords = [
-    "compare", "best", "vs", "alternatives",
-    "features", "benefits", "reviews"
-  ];
-
-  for (let word of transactionalWords) {
-    if (content.includes(word)) {
+  for (let w of transactional) {
+    if (content.includes(w)) {
       reasons.push("Transactional language detected");
       return { intent: "Transactional", reasons };
     }
   }
 
-  for (let word of commercialWords) {
-    if (content.includes(word)) {
-      reasons.push("Comparison or evaluation language detected");
+  for (let w of commercial) {
+    if (content.includes(w)) {
+      reasons.push("Evaluation or comparison language detected");
       return { intent: "Commercial", reasons };
     }
   }
 
-  reasons.push("Content is primarily informational");
+  reasons.push("Content is primarily educational");
   return { intent: "Informational", reasons };
 }
 
@@ -302,15 +272,12 @@ function getVerdict(keywordIntent, pageIntent) {
   if (keywordIntent === pageIntent) {
     return { label: "🟢 Intent Match", class: "match" };
   }
-
   if (keywordIntent === "Informational" && pageIntent !== "Informational") {
     return { label: "🔴 Strong Mismatch", class: "mismatch" };
   }
-
   if (keywordIntent === "Transactional" && pageIntent !== "Transactional") {
     return { label: "🔴 Strong Mismatch", class: "mismatch" };
   }
-
   return { label: "🟡 Partial Mismatch", class: "partial" };
 }
 
@@ -318,7 +285,6 @@ function getFixes(keywordIntent, pageIntent) {
   if (keywordIntent === pageIntent) {
     return ["Your content already matches the search intent."];
   }
-
   if (keywordIntent === "Informational") {
     return [
       "Remove pricing and sales language",
@@ -326,7 +292,6 @@ function getFixes(keywordIntent, pageIntent) {
       "Add definitions, examples, and FAQs"
     ];
   }
-
   if (keywordIntent === "Commercial") {
     return [
       "Add comparisons or benefit-driven sections",
@@ -334,12 +299,21 @@ function getFixes(keywordIntent, pageIntent) {
       "Reduce direct sales pressure"
     ];
   }
-
   return [
     "Add pricing or offers",
     "Include strong CTAs (Buy, Sign up)",
     "Focus content on conversion"
   ];
+}
+
+function getConfidence(keywordData, pageData) {
+  let score = 0;
+  score += keywordData.reasons.length * 2;
+  score += pageData.reasons.length * 2;
+  if (keywordData.intent === "Transactional" || pageData.intent === "Transactional") score += 2;
+  if (score >= 6) return "High";
+  if (score >= 4) return "Medium";
+  return "Low";
 }
 
 document.getElementById('keyword').addEventListener('input', () => {
