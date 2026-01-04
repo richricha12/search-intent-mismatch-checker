@@ -139,56 +139,52 @@
 
 <script>
 function analyze() {
-  const keyword = document.getElementById('keyword').value.toLowerCase();
-  const content = document.getElementById('content').value.toLowerCase();
+  const output = document.getElementById('output');
+  const button = document.getElementById('analyzeBtn');
+
+  // Clear old result
+  output.innerHTML = "";
+
+  // Disable button temporarily
+  if (button) {
+    button.disabled = true;
+    button.innerText = "Analyzing...";
+  }
+
+  const keyword = document.getElementById('keyword').value.toLowerCase().trim();
+  const content = document.getElementById('content').value.toLowerCase().trim();
+
+  // Basic validation
+  if (!keyword || !content) {
+    output.innerHTML = "<p>Please enter both keyword and page content.</p>";
+    if (button) {
+      button.disabled = false;
+      button.innerText = "Analyze Intent";
+    }
+    return;
+  }
 
   let keywordIntent = detectKeywordIntent(keyword);
   let pageIntent = detectPageIntent(content);
 
   let verdict = getVerdict(keywordIntent, pageIntent);
 
-  document.getElementById('output').innerHTML = `
+  output.innerHTML = `
     <div class="result ${verdict.class}">
       <h2>${verdict.label}</h2>
       <p><strong>Keyword Intent:</strong> ${keywordIntent}</p>
       <p><strong>Page Intent:</strong> ${pageIntent}</p>
     </div>
   `;
-}
 
-function detectKeywordIntent(keyword) {
-  if (/(buy|pricing|price|cost|sign up|download|trial)/.test(keyword)) {
-    return "Transactional";
+  // Re-enable button
+  if (button) {
+    button.disabled = false;
+    button.innerText = "Analyze Intent";
   }
-  if (/(best|top|vs|compare|comparison|tools|software|review)/.test(keyword)) {
-    return "Commercial";
-  }
-  return "Informational";
-}
-
-function detectPageIntent(content) {
-  if (/(buy|pricing|sign up|get started|download)/.test(content)) {
-    return "Transactional";
-  }
-  if (/(compare|best|vs|alternatives|tools)/.test(content)) {
-    return "Commercial";
-  }
-  return "Informational";
-}
-
-function getVerdict(keywordIntent, pageIntent) {
-  if (keywordIntent === pageIntent) {
-    return { label: "🟢 Intent Match", class: "match" };
-  }
-  if (keywordIntent === "Informational" && pageIntent !== "Informational") {
-    return { label: "🔴 Strong Mismatch", class: "mismatch" };
-  }
-  if (keywordIntent === "Transactional" && pageIntent !== "Transactional") {
-    return { label: "🔴 Strong Mismatch", class: "mismatch" };
-  }
-  return { label: "🟡 Partial Mismatch", class: "partial" };
 }
 </script>
+
 
 </div>
 </body>
