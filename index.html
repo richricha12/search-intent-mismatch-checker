@@ -214,14 +214,29 @@ const content = rawContent
 function detectKeywordIntent(keyword) {
   let reasons = [];
 
-  if (/(buy|pricing|price|cost|sign up|download|trial)/.test(keyword)) {
-    reasons.push("Transactional modifier detected");
-    return { intent: "Transactional", reasons };
+  const transactionalWords = [
+    "buy", "pricing", "price", "cost",
+    "sign up", "download", "trial"
+  ];
+
+  const commercialWords = [
+    "best", "top", "vs", "compare",
+    "comparison", "tools", "software",
+    "review", "benefits"
+  ];
+
+  for (let word of transactionalWords) {
+    if (keyword.includes(word)) {
+      reasons.push("Transactional modifier detected");
+      return { intent: "Transactional", reasons };
+    }
   }
 
-  if (/(best|top|vs|compare|comparison|tools|software|review|benefits)/.test(keyword)) {
-    reasons.push("Commercial modifier detected");
-    return { intent: "Commercial", reasons };
+  for (let word of commercialWords) {
+    if (keyword.includes(word)) {
+      reasons.push("Commercial modifier detected");
+      return { intent: "Commercial", reasons };
+    }
   }
 
   reasons.push("No buying or comparison modifiers found");
@@ -231,17 +246,31 @@ function detectKeywordIntent(keyword) {
 function detectPageIntent(content) {
   let reasons = [];
 
-  if (/(buy|pricing|sign up|get started|money-back)/.test(content)) {
-    reasons.push("Strong call-to-action detected");
-    return { intent: "Transactional", reasons };
+  const transactionalWords = [
+    "buy", "pricing", "price", "sign up",
+    "get started", "money-back", "order"
+  ];
+
+  const commercialWords = [
+    "compare", "best", "vs", "alternatives",
+    "features", "benefits", "reviews"
+  ];
+
+  for (let word of transactionalWords) {
+    if (content.includes(word)) {
+      reasons.push("Transactional language detected");
+      return { intent: "Transactional", reasons };
+    }
   }
 
-  if (/(compare|best|vs|alternatives|features|benefits)/.test(content)) {
-    reasons.push("Evaluation or comparison language detected");
-    return { intent: "Commercial", reasons };
+  for (let word of commercialWords) {
+    if (content.includes(word)) {
+      reasons.push("Comparison or evaluation language detected");
+      return { intent: "Commercial", reasons };
+    }
   }
 
-  reasons.push("Content is primarily educational");
+  reasons.push("Content is primarily informational");
   return { intent: "Informational", reasons };
 }
 
