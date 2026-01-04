@@ -1,192 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-97N6TGY3J4');
-</script>
+  <!-- Google tag (gtag.js) — DO NOT CHANGE -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-97N6TGY3J4');
+  </script>
+
   <meta charset="UTF-8">
   <title>Search Intent Mismatch Checker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
- <style>
-  * {
-    box-sizing: border-box;
-  }
+  <style>
+    * { box-sizing: border-box; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
-    background: #f9fafb;
-    color: #111827;
-    margin: 0;
-    padding: 0;
-  }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      color: #111827;
+    }
 
-  .container {
-    max-width: 860px;
-    margin: 60px auto;
-    background: #ffffff;
-    padding: 32px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-  }
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 36px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    }
 
-  h1 {
-    font-size: 28px;
-    margin-bottom: 24px;
-  }
+    header {
+      margin-bottom: 32px;
+    }
 
-  label {
-    font-weight: 600;
-    display: block;
-    margin-top: 20px;
-  }
+    h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
 
-  input, textarea {
-    width: 100%;
-    padding: 14px;
-    margin-top: 8px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-  }
+    header p {
+      color: #6b7280;
+      font-size: 16px;
+    }
 
-  textarea {
-    resize: vertical;
-  }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 20px;
+    }
 
-  button {
-    margin-top: 24px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 10px;
-    border: none;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-  }
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+    }
 
-  button:hover {
-    background: #1e40af;
-  }
+    textarea {
+      resize: vertical;
+      min-height: 160px;
+    }
 
-  .result {
-    margin-top: 32px;
-    padding: 20px;
-    border-radius: 10px;
-    line-height: 1.6;
-  }
+    button {
+      margin-top: 28px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
 
-  .match {
-    background: #ecfdf5;
-    border: 1px solid #10b981;
-  }
+    button:disabled {
+      background: #93c5fd;
+      cursor: not-allowed;
+    }
 
-  .partial {
-    background: #fffbeb;
-    border: 1px solid #f59e0b;
-  }
+    .result {
+      margin-top: 36px;
+      padding: 24px;
+      border-radius: 12px;
+      line-height: 1.6;
+    }
 
-  .mismatch {
-    background: #fef2f2;
-    border: 1px solid #ef4444;
-  }
+    .match {
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+    }
 
-  ul {
-    margin-top: 8px;
-  }
+    .partial {
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+    }
 
-  li {
-    margin-left: 18px;
-  }
-</style>
+    .mismatch {
+      background: #fef2f2;
+      border: 1px solid #ef4444;
+    }
 
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .informational { background: #e0f2fe; color: #0369a1; }
+    .commercial { background: #fef3c7; color: #92400e; }
+    .transactional { background: #ede9fe; color: #5b21b6; }
+
+    ul { margin-top: 8px; }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #6b7280;
+    }
+  </style>
 </head>
 
 <body>
 <div class="container">
 
-<header style="margin-bottom:32px;">
-  <h1 style="margin-bottom:8px;">
-    Search Intent Mismatch Checker
-  </h1>
-
-  <p style="color:#6b7280;font-size:16px;">
-    Instantly check whether your page content aligns with the real search intent behind a keyword.
-  </p>
+<header>
+  <h1>Search Intent Mismatch Checker</h1>
+  <p>Instantly check whether your page content aligns with the real search intent behind a keyword.</p>
 </header>
-
 
 <label>
   Target Keyword
-  <input id="keyword" placeholder="e.g. best seo tools">
+  <input id="keyword" placeholder="e.g. benefits of land ownership">
 </label>
 
 <label>
   Page Content
-  <textarea id="content" rows="10" placeholder="Paste page content here"></textarea>
+  <textarea id="content" placeholder="Paste your page content here..."></textarea>
 </label>
 
 <button type="button" id="analyzeBtn" onclick="analyze()">Analyze Intent</button>
 
-
 <div id="output"></div>
+
+<footer>
+  Built for SEO professionals.  
+  No data is stored. All analysis runs locally in your browser.
+</footer>
+
+</div>
 
 <script>
 function analyze() {
   const output = document.getElementById('output');
   const button = document.getElementById('analyzeBtn');
 
-  // Clear old result
   output.innerHTML = "";
-
-  // Disable button temporarily
-  if (button) {
-    button.disabled = true;
-    button.innerText = "Analyzing...";
-  }
+  button.disabled = true;
+  button.innerText = "Analyzing...";
 
   const keyword = document.getElementById('keyword').value.toLowerCase().trim();
   const content = document.getElementById('content').value.toLowerCase().trim();
 
-  // Basic validation
   if (!keyword || !content) {
     output.innerHTML = "<p>Please enter both keyword and page content.</p>";
-    if (button) {
-      button.disabled = false;
-      button.innerText = "Analyze Intent";
-    }
+    button.disabled = false;
+    button.innerText = "Analyze Intent";
     return;
   }
 
-  let keywordIntent = detectKeywordIntent(keyword);
-  let pageIntent = detectPageIntent(content);
-
-  let verdict = getVerdict(keywordIntent, pageIntent);
+  const keywordData = detectKeywordIntent(keyword);
+  const pageData = detectPageIntent(content);
+  const verdict = getVerdict(keywordData.intent, pageData.intent);
+  const fixes = getFixes(keywordData.intent, pageData.intent);
 
   output.innerHTML = `
     <div class="result ${verdict.class}">
       <h2>${verdict.label}</h2>
-      <p><strong>Keyword Intent:</strong> ${keywordIntent}</p>
-      <p><strong>Page Intent:</strong> ${pageIntent}</p>
+
+      <p><strong>Keyword Intent:</strong>
+        <span class="badge ${keywordData.intent.toLowerCase()}">${keywordData.intent}</span>
+      </p>
+      <ul>${keywordData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+
+      <p><strong>Page Intent:</strong>
+        <span class="badge ${pageData.intent.toLowerCase()}">${pageData.intent}</span>
+      </p>
+      <ul>${pageData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+
+      <h3>How to Fix This</h3>
+      <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
     </div>
   `;
 
-  // Re-enable button
-  if (button) {
-    button.disabled = false;
-    button.innerText = "Analyze Intent";
-  }
+  button.disabled = false;
+  button.innerText = "Analyze Intent";
 }
+
+function detectKeywordIntent(keyword) {
+  let reasons = [];
+
+  if (/(buy|pricing|price|cost|sign up|download|trial)/.test(keyword)) {
+    reasons.push("Transactional modifier detected");
+    return { intent: "Transactional", reasons };
+  }
+
+  if (/(best|top|vs|compare|comparison|tools|software|review|benefits)/.test(keyword)) {
+    reasons.push("Commercial modifier detected");
+    return { intent: "Commercial", reasons };
+  }
+
+  reasons.push("No buying or comparison modifiers found");
+  return { intent: "Informational", reasons };
+}
+
+function detectPageIntent(content) {
+  let reasons = [];
+
+  if (/(buy|pricing|sign up|get started|money-back)/.test(content)) {
+    reasons.push("Strong call-to-action detected");
+    return { intent: "Transactional", reasons };
+  }
+
+  if (/(compare|best|vs|alternatives|features|benefits)/.test(content)) {
+    reasons.push("Evaluation or comparison language detected");
+    return { intent: "Commercial", reasons };
+  }
+
+  reasons.push("Content is primarily educational");
+  return { intent: "Informational", reasons };
+}
+
+function getVerdict(keywordIntent, pageIntent) {
+  if (keywordIntent === pageIntent) {
+    return { label: "🟢 Intent Match", class: "match" };
+  }
+
+  if (keywordIntent === "Informational" && pageIntent !== "Informational") {
+    return { label: "🔴 Strong Mismatch", class: "mismatch" };
+  }
+
+  if (keywordIntent === "Transactional" && pageIntent !== "Transactional") {
+    return { label: "🔴 Strong Mismatch", class: "mismatch" };
+  }
+
+  return { label: "🟡 Partial Mismatch", class: "partial" };
+}
+
+function getFixes(keywordIntent, pageIntent) {
+  if (keywordIntent === pageIntent) {
+    return ["Your content already matches the search intent."];
+  }
+
+  if (keywordIntent === "Informational") {
+    return [
+      "Remove pricing and sales language",
+      "Focus on education and explanations",
+      "Add definitions, examples, and FAQs"
+    ];
+  }
+
+  if (keywordIntent === "Commercial") {
+    return [
+      "Add comparisons or benefit-driven sections",
+      "Mention multiple options or use cases",
+      "Reduce direct sales pressure"
+    ];
+  }
+
+  return [
+    "Add pricing or offers",
+    "Include strong CTAs (Buy, Sign up)",
+    "Focus content on conversion"
+  ];
+}
+
+document.getElementById('keyword').addEventListener('input', () => {
+  document.getElementById('output').innerHTML = "";
+});
+document.getElementById('content').addEventListener('input', () => {
+  document.getElementById('output').innerHTML = "";
+});
 </script>
 
-
-</div>
 </body>
 </html>
