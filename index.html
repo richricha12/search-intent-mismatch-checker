@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics (KEEP AS IS) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -10,53 +10,75 @@
     gtag('config', 'G-97N6TGY3J4');
   </script>
 
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Search Intent Mismatch Checker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    :root {
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #dadce0;
+      --primary: #1a73e8;
+      --success: #137333;
+      --warning: #ea8600;
+      --danger: #d93025;
+    }
+
     * { box-sizing: border-box; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f9fafb;
       margin: 0;
-      color: #111827;
+      background: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
     }
 
-    .container {
-      max-width: 900px;
-      margin: 60px auto;
-      background: #ffffff;
-      padding: 36px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    .page {
+      max-width: 980px;
+      margin: 48px auto;
+      padding: 0 16px;
     }
 
-    h1 {
-      margin-bottom: 6px;
-      font-size: 30px;
-    }
-
-    .subtitle {
-      color: #6b7280;
+    .header {
       margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
       font-size: 16px;
     }
 
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
     label {
-      font-weight: 600;
       display: block;
-      margin-top: 20px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      font-size: 14px;
     }
 
     input, textarea {
       width: 100%;
       padding: 14px;
-      margin-top: 8px;
-      font-size: 15px;
       border-radius: 8px;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border);
+      font-size: 15px;
     }
 
     textarea {
@@ -64,96 +86,118 @@
       resize: vertical;
     }
 
+    .actions {
+      margin-top: 24px;
+      text-align: right;
+    }
+
     button {
-      margin-top: 28px;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 10px;
-      border: none;
-      background: #2563eb;
+      background: var(--primary);
       color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
       cursor: pointer;
     }
 
     button:disabled {
-      background: #93c5fd;
+      opacity: 0.6;
       cursor: not-allowed;
     }
 
     .result {
-      margin-top: 36px;
-      padding: 24px;
       border-radius: 12px;
-      line-height: 1.6;
+      padding: 24px;
+      border: 1px solid var(--border);
     }
 
-    .match {
-      background: #ecfdf5;
-      border: 1px solid #10b981;
+    .match { border-left: 6px solid var(--success); }
+    .partial { border-left: 6px solid var(--warning); }
+    .mismatch { border-left: 6px solid var(--danger); }
+
+    .result h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+      font-weight: 600;
     }
 
-    .partial {
-      background: #fffbeb;
-      border: 1px solid #f59e0b;
+    .confidence {
+      font-size: 14px;
+      margin-left: 8px;
     }
 
-    .mismatch {
-      background: #fef2f2;
-      border: 1px solid #ef4444;
-    }
+    .high { color: var(--success); }
+    .medium { color: var(--warning); }
+    .low { color: var(--danger); }
 
     .badge {
       display: inline-block;
       padding: 6px 12px;
       border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
+      margin-left: 8px;
     }
 
-    .informational { background: #e0f2fe; color: #0369a1; }
-    .commercial { background: #fef3c7; color: #92400e; }
-    .transactional { background: #ede9fe; color: #5b21b6; }
+    .informational { background: #e8f0fe; color: #174ea6; }
+    .commercial { background: #fef7e0; color: #8d6e00; }
+    .transactional { background: #f3e8fd; color: #5b2dab; }
 
-    .high { color: #059669; }
-    .medium { color: #d97706; }
-    .low { color: #dc2626; }
+    .section {
+      margin-top: 20px;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
 
     footer {
-      margin-top: 48px;
+      margin-top: 40px;
       padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 14px;
-      color: #6b7280;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
     }
   </style>
 </head>
 
 <body>
-<div class="container">
+<div class="page">
 
-  <h1>Search Intent Mismatch Checker</h1>
-  <div class="subtitle">
-    Check whether your page content aligns with the real search intent behind a keyword.
+  <div class="header">
+    <h1>Search Intent Mismatch Checker</h1>
+    <p>Check whether your page content truly matches the search intent behind a keyword.</p>
   </div>
 
-  <label>
-    Target Keyword
+  <div class="card">
+    <label>Target Keyword</label>
     <input id="keyword" placeholder="e.g. why invest in land">
-  </label>
 
-  <label>
-    Page Content
+    <label style="margin-top:16px;">Page Content</label>
     <textarea id="content" placeholder="Paste your page content here..."></textarea>
-  </label>
 
-  <button id="analyzeBtn">Analyze Intent</button>
+    <div class="actions">
+      <button id="analyzeBtn">Analyze Intent</button>
+    </div>
+  </div>
 
   <div id="output"></div>
 
   <footer>
-    Built for SEO professionals.  
-    No data is stored. All analysis runs locally in your browser.
+    Built for SEO professionals · Runs entirely in your browser · No data stored
   </footer>
 
 </div>
@@ -163,42 +207,113 @@ document.getElementById("analyzeBtn").addEventListener("click", analyze);
 
 function analyze() {
   const output = document.getElementById("output");
-  const button = document.getElementById("analyzeBtn");
+  const btn = document.getElementById("analyzeBtn");
 
-  button.disabled = true;
-  button.textContent = "Analyzing...";
+  btn.disabled = true;
+  btn.textContent = "Analyzing…";
   output.innerHTML = "";
 
   const keyword = document.getElementById("keyword").value.toLowerCase().trim();
-  const rawContent = document.getElementById("content").value;
-  const content = rawContent.toLowerCase().slice(0, 6000);
+  const content = document.getElementById("content").value.toLowerCase().slice(0, 6000);
 
   if (!keyword || !content) {
-    output.innerHTML = "<p>Please enter both keyword and page content.</p>";
-    resetButton(button);
+    output.innerHTML = `<div class="card">Please enter both keyword and content.</div>`;
+    reset(btn);
     return;
   }
 
-  const keywordData = detectKeywordIntent(keyword);
-  const pageData = detectPageIntent(content);
-  const verdict = getVerdict(keywordData.intent, pageData.intent);
-  const confidence = getConfidence(keywordData, pageData);
-  const fixes = getFixes(keywordData.intent, pageData.intent);
+  const k = detectKeywordIntent(keyword);
+  const p = detectPageIntent(content);
+  const verdict = getVerdict(k.intent, p.intent);
+  const confidence = getConfidence(k, p);
+  const fixes = getFixes(k.intent, p.intent);
   const angles = detectContentAngles(content);
 
   output.innerHTML = `
-    <div class="result ${verdict.class}">
-      <h2>
-        ${verdict.label} —
-        <span class="${confidence.toLowerCase()}">${confidence} Confidence</span>
+    <div class="card result ${verdict.class}">
+      <h2>${verdict.label}
+        <span class="confidence ${confidence.toLowerCase()}">${confidence} confidence</span>
       </h2>
 
-      <p><strong>Keyword Intent:</strong>
-        <span class="badge ${keywordData.intent.toLowerCase()}">${keywordData.intent}</span>
-      </p>
-      <ul>${keywordData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+      <div class="section">
+        <strong>Keyword intent:</strong>
+        <span class="badge ${k.intent.toLowerCase()}">${k.intent}</span>
+        <ul>${k.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+      </div>
 
-      <p><strong>Page Intent:</strong>
-        <span class="badge ${pageData.intent.toLowerCase()}">${pageData.intent}</span>
-      </p>
-      <ul>${pageData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+      <div class="section">
+        <strong>Page intent:</strong>
+        <span class="badge ${p.intent.toLowerCase()}">${p.intent}</span>
+        <ul>${p.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+      </div>
+
+      <div class="section">
+        <h3>How to fix this</h3>
+        <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
+      </div>
+
+      ${angles.length ? `
+      <div class="section">
+        <h3>This content is better suited for</h3>
+        <ul>${angles.map(a => `<li>${a}</li>`).join("")}</ul>
+      </div>` : ""}
+    </div>
+  `;
+
+  reset(btn);
+}
+
+function reset(btn) {
+  btn.disabled = false;
+  btn.textContent = "Analyze Intent";
+}
+
+/* ---- Logic ---- */
+
+function detectKeywordIntent(k) {
+  const t = ["buy","price","pricing","sign up","download"];
+  const c = ["best","compare","vs","review","tools","benefits"];
+  for (let w of t) if (k.includes(w)) return { intent:"Transactional", reasons:["Transactional modifier detected"] };
+  for (let w of c) if (k.includes(w)) return { intent:"Commercial", reasons:["Commercial modifier detected"] };
+  return { intent:"Informational", reasons:["No buying or comparison modifiers found"] };
+}
+
+function detectPageIntent(c) {
+  const t = ["buy","pricing","money-back","order"];
+  const m = ["compare","vs","features","benefits"];
+  for (let w of t) if (c.includes(w)) return { intent:"Transactional", reasons:["Transactional language detected"] };
+  for (let w of m) if (c.includes(w)) return { intent:"Commercial", reasons:["Comparison or evaluation language detected"] };
+  return { intent:"Informational", reasons:["Educational content detected"] };
+}
+
+function getVerdict(k,p) {
+  if (k === p) return { label:"Intent match", class:"match" };
+  if (k === "Informational" || k === "Transactional") return { label:"Strong mismatch", class:"mismatch" };
+  return { label:"Partial mismatch", class:"partial" };
+}
+
+function getFixes(k,p) {
+  if (k === p) return ["Content already aligns with intent"];
+  if (k === "Informational") return ["Remove sales language","Add explanations and FAQs","Focus on education"];
+  if (k === "Commercial") return ["Add comparisons","Mention alternatives","Reduce sales pressure"];
+  return ["Add CTAs","Add pricing","Optimize for conversions"];
+}
+
+function getConfidence(k,p) {
+  let s = k.reasons.length + p.reasons.length;
+  if (k.intent === "Transactional" || p.intent === "Transactional") s++;
+  return s >= 3 ? "High" : s === 2 ? "Medium" : "Low";
+}
+
+function detectContentAngles(c) {
+  const a = [];
+  if (c.includes("benefit")) a.push("Explaining benefits");
+  if (c.includes("compare")) a.push("Comparing options");
+  if (c.includes("beginner")) a.push("Beginner guidance");
+  if (c.includes("invest")) a.push("Investment education");
+  if (c.includes("risk")) a.push("Risk and safety discussion");
+  return a.slice(0,4);
+}
+</script>
+</body>
+</html>
