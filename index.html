@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Intent Mismatch Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .result {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .match { background: #e6fffa; }
+    .partial { background: #fffbe6; }
+    .mismatch { background: #ffe6e6; }
+  </style>
+</head>
+
+<body>
+
+<h1>Search Intent Mismatch Checker</h1>
+
+<label>
+  Target Keyword
+  <input id="keyword" placeholder="e.g. best seo tools">
+</label>
+
+<label>
+  Page Content
+  <textarea id="content" rows="10" placeholder="Paste page content here"></textarea>
+</label>
+
+<button onclick="analyze()">Analyze Intent</button>
+
+<div id="output"></div>
+
+<script>
+function analyze() {
+  const keyword = document.getElementById('keyword').value.toLowerCase();
+  const content = document.getElementById('content').value.toLowerCase();
+
+  let keywordIntent = detectKeywordIntent(keyword);
+  let pageIntent = detectPageIntent(content);
+
+  let verdict = getVerdict(keywordIntent, pageIntent);
+
+  document.getElementById('output').innerHTML = `
+    <div class="result ${verdict.class}">
+      <h2>${verdict.label}</h2>
+      <p><strong>Keyword Intent:</strong> ${keywordIntent}</p>
+      <p><strong>Page Intent:</strong> ${pageIntent}</p>
+    </div>
+  `;
+}
+
+function detectKeywordIntent(keyword) {
+  if (/(buy|pricing|price|cost|sign up|download|trial)/.test(keyword)) {
+    return "Transactional";
+  }
+  if (/(best|top|vs|compare|comparison|tools|software|review)/.test(keyword)) {
+    return "Commercial";
+  }
+  return "Informational";
+}
+
+function detectPageIntent(content) {
+  if (/(buy|pricing|sign up|get started|download)/.test(content)) {
+    return "Transactional";
+  }
+  if (/(compare|best|vs|alternatives|tools)/.test(content)) {
+    return "Commercial";
+  }
+  return "Informational";
+}
+
+function getVerdict(keywordIntent, pageIntent) {
+  if (keywordIntent === pageIntent) {
+    return { label: "🟢 Intent Match", class: "match" };
+  }
+  if (keywordIntent === "Informational" && pageIntent !== "Informational") {
+    return { label: "🔴 Strong Mismatch", class: "mismatch" };
+  }
+  if (keywordIntent === "Transactional" && pageIntent !== "Transactional") {
+    return { label: "🔴 Strong Mismatch", class: "mismatch" };
+  }
+  return { label: "🟡 Partial Mismatch", class: "partial" };
+}
+</script>
+
+</body>
+</html>
