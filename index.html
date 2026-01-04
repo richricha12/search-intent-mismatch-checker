@@ -1,259 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-97N6TGY3J4');
+  </script>
 
-<!-- =======================
-     BASIC SECURITY HEADERS
-======================== -->
-<meta http-equiv="Content-Security-Policy"
-      content="
-      default-src 'self';
-      script-src 'self' https://www.googletagmanager.com;
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' data:;
-      connect-src https://www.google-analytics.com https://www.googletagmanager.com;
-      frame-ancestors 'none';
-      base-uri 'self';
-      form-action 'self';
-      ">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search Intent Mismatch Checker</title>
 
-<meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="Referrer-Policy" content="no-referrer">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --bg-dark: #0b1d33;
+      --bg-dark-2: #102a44;
+      --card: #ffffff;
+      --border: #e0e3e7;
+      --text: #202124;
+      --muted: #5f6368;
+      --success: #137333;
+      --warning: #ea8600;
+      --danger: #d93025;
+    }
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-97N6TGY3J4');
-</script>
+    * { box-sizing: border-box; }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Search Intent Mismatch Checker</title>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f8f9fa;
+      color: var(--text);
+    }
 
-<style>
-/* =======================
-   DESIGN SYSTEM
-======================== */
-:root {
-  --bg-dark: #0b1d33;
-  --bg-dark-2: #0f2a44;
-  --primary: #1a73e8;
-  --card: #ffffff;
-  --border: #e0e3e7;
-  --text: #202124;
-  --muted: #5f6368;
-  --success: #137333;
-  --warning: #ea8600;
-  --danger: #d93025;
-}
+    /* ===== HERO (SAFE, SOLID) ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--bg-dark), var(--bg-dark-2));
+      padding: 80px 16px 120px;
+      color: white;
+      text-align: center;
+    }
 
-/* Reset */
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  color: var(--text);
-  background: #f8f9fa;
-}
+    .hero h1 {
+      font-size: 40px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
 
-/* =======================
-   HERO SECTION
-======================== */
-.hero {
-  position: relative;
-  padding: 80px 16px 120px;
-  background: radial-gradient(circle at 20% 20%, #1b3c68, var(--bg-dark));
-  color: white;
-  overflow: hidden;
-}
+    .hero h1 span {
+      color: #8ab4f8;
+    }
 
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(transparent 95%, rgba(255,255,255,0.03) 100%);
-  pointer-events: none;
-}
+    .hero p {
+      max-width: 720px;
+      margin: 0 auto;
+      font-size: 18px;
+      color: #cbd5e1;
+    }
 
-.hero-inner {
-  max-width: 980px;
-  margin: 0 auto;
-  text-align: center;
-}
+    /* ===== FORM CARD ===== */
+    .form-wrapper {
+      max-width: 760px;
+      margin: -80px auto 48px;
+      padding: 0 16px;
+    }
 
-.hero h1 {
-  font-size: 40px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+    }
 
-.hero h1 span {
-  color: #8ab4f8;
-}
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
 
-.hero p {
-  font-size: 18px;
-  color: #cbd5e1;
-  max-width: 720px;
-  margin: 0 auto;
-}
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 15px;
+    }
 
-/* =======================
-   FLOATING FORM CARD
-======================== */
-.form-wrapper {
-  max-width: 760px;
-  margin: -80px auto 48px;
-  padding: 0 16px;
-}
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
 
-.form-card {
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: 28px;
-  border: 1px solid var(--border);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-}
+    .actions {
+      text-align: center;
+      margin-top: 24px;
+    }
 
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 999px;
+      cursor: pointer;
+      min-width: 220px;
+    }
 
-input, textarea {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  font-size: 15px;
-}
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-textarea {
-  min-height: 160px;
-  resize: vertical;
-}
+    /* ===== RESULTS ===== */
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 16px 64px;
+    }
 
-/* Button */
-.actions {
-  text-align: center;
-  margin-top: 24px;
-}
+    .result {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      margin-top: 32px;
+    }
 
-button {
-  background: linear-gradient(135deg, #1a73e8, #1558c0);
-  color: white;
-  border: none;
-  padding: 14px 36px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 999px;
-  cursor: pointer;
-  min-width: 220px;
-}
+    .match { border-left: 6px solid var(--success); }
+    .partial { border-left: 6px solid var(--warning); }
+    .mismatch { border-left: 6px solid var(--danger); }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
 
-/* =======================
-   RESULTS
-======================== */
-.page {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 0 16px 64px;
-}
+    .informational { background:#e8f0fe; color:#174ea6; }
+    .commercial { background:#fef7e0; color:#8d6e00; }
+    .transactional { background:#f3e8fd; color:#5b2dab; }
 
-.result {
-  background: var(--card);
-  border-radius: 14px;
-  padding: 28px;
-  border: 1px solid var(--border);
-  margin-top: 32px;
-}
+    .section {
+      margin-top: 20px;
+    }
 
-.match { border-left: 6px solid var(--success); }
-.partial { border-left: 6px solid var(--warning); }
-.mismatch { border-left: 6px solid var(--danger); }
-
-.result h2 {
-  margin: 0 0 12px;
-  font-size: 22px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-left: 8px;
-}
-
-.informational { background:#e8f0fe; color:#174ea6; }
-.commercial { background:#fef7e0; color:#8d6e00; }
-.transactional { background:#f3e8fd; color:#5b2dab; }
-
-.section {
-  margin-top: 20px;
-}
-
-.section h3 {
-  font-size: 16px;
-  margin-bottom: 8px;
-}
-
-ul {
-  margin: 0;
-  padding-left: 18px;
-}
-
-li {
-  margin-bottom: 6px;
-  font-size: 14px;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 64px;
-}
-</style>
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 64px;
+    }
+  </style>
 </head>
 
 <body>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <h1>Check if your content matches <span>search intent</span></h1>
-    <p>
-      Instantly analyze whether your page content aligns with the real intent behind any keyword.
-      Fix mismatches, improve relevance, and rank smarter.
-    </p>
-  </div>
+  <h1>Search Intent <span>Mismatch Checker</span></h1>
+  <p>
+    Instantly check whether your page content aligns with the real search intent
+    behind any keyword — and learn how to fix it.
+  </p>
 </section>
 
 <!-- FORM -->
 <div class="form-wrapper">
-  <div class="form-card">
+  <div class="card">
     <label>Target Keyword</label>
-    <input id="keyword" maxlength="200" placeholder="e.g. why invest in land">
+    <input id="keyword" placeholder="e.g. why invest in land">
 
     <label style="margin-top:16px;">Page Content</label>
-    <textarea id="content" maxlength="6000"
-      placeholder="Paste your page content here..."></textarea>
+    <textarea id="content" placeholder="Paste your page content here..."></textarea>
 
     <div class="actions">
       <button id="analyzeBtn">Analyze Intent</button>
@@ -266,24 +195,11 @@ footer {
   <div id="output"></div>
 
   <footer>
-    Runs entirely in your browser · No data stored · Secure by design
+    Built for SEO professionals · Runs entirely in your browser · No data stored
   </footer>
 </div>
 
 <script>
-/* =======================
-   SAFE HELPERS
-======================== */
-function escapeHTML(str) {
-  return str.replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#039;"
-  }[m]));
-}
-
-/* =======================
-   MAIN LOGIC (UNCHANGED)
-======================== */
 document.getElementById("analyzeBtn").addEventListener("click", analyze);
 
 function analyze() {
@@ -292,13 +208,13 @@ function analyze() {
 
   btn.disabled = true;
   btn.textContent = "Analyzing…";
-  output.textContent = "";
+  output.innerHTML = "";
 
   const keyword = document.getElementById("keyword").value.toLowerCase().trim();
   const content = document.getElementById("content").value.toLowerCase().trim();
 
   if (!keyword || !content) {
-    output.textContent = "Please enter both keyword and content.";
+    output.innerHTML = "<div class='result'>Please enter both keyword and content.</div>";
     reset(btn);
     return;
   }
@@ -325,13 +241,13 @@ function analyze() {
 
       <div class="section">
         <h3>How to fix this</h3>
-        <ul>${fixes.map(f => `<li>${escapeHTML(f)}</li>`).join("")}</ul>
+        <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
       </div>
 
       ${angles.length ? `
       <div class="section">
         <h3>This content is better suited for</h3>
-        <ul>${angles.map(a => `<li>${escapeHTML(a)}</li>`).join("")}</ul>
+        <ul>${angles.map(a => `<li>${a}</li>`).join("")}</ul>
       </div>` : ""}
     </div>
   `;
@@ -344,7 +260,6 @@ function reset(btn) {
   btn.textContent = "Analyze Intent";
 }
 
-/* Intent detection (same logic) */
 function detectKeywordIntent(k) {
   const t = ["buy","price","pricing","sign up","download"];
   const c = ["best","compare","vs","review","tools","benefits"];
@@ -363,7 +278,8 @@ function detectPageIntent(c) {
 
 function getVerdict(k,p) {
   if (k === p) return { label:"Intent match", class:"match" };
-  if (k === "Informational" || k === "Transactional") return { label:"Strong mismatch", class:"mismatch" };
+  if (k === "Informational" || k === "Transactional")
+    return { label:"Strong mismatch", class:"mismatch" };
   return { label:"Partial mismatch", class:"partial" };
 }
 
