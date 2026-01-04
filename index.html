@@ -211,6 +211,30 @@ const content = rawContent
   button.innerText = "Analyze Intent";
 }
 
+function getFixes(keywordIntent, pageIntent) {
+  ...
+}
+
+function getConfidence(keywordData, pageData) {
+  let score = 0;
+
+  score += keywordData.reasons.length * 2;
+  score += pageData.reasons.length * 2;
+
+  if (keywordData.intent === "Transactional" || pageData.intent === "Transactional") {
+    score += 2;
+  }
+
+  if (score >= 6) return "High";
+  if (score >= 4) return "Medium";
+  return "Low";
+}
+
+function analyze() {
+  ...
+}
+
+  
 function detectKeywordIntent(keyword) {
   let reasons = [];
 
