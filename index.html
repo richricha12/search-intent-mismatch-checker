@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics (DO NOT MODIFY) -->
+  <!-- Google Analytics (KEEP AS IS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-97N6TGY3J4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -159,10 +159,6 @@
 </div>
 
 <script>
-/* =========================
-   CORE LOGIC (SAFE VERSION)
-   ========================= */
-
 document.getElementById("analyzeBtn").addEventListener("click", analyze);
 
 function analyze() {
@@ -174,8 +170,8 @@ function analyze() {
   output.innerHTML = "";
 
   const keyword = document.getElementById("keyword").value.toLowerCase().trim();
-  const contentRaw = document.getElementById("content").value;
-  const content = contentRaw.toLowerCase().slice(0, 6000);
+  const rawContent = document.getElementById("content").value;
+  const content = rawContent.toLowerCase().slice(0, 6000);
 
   if (!keyword || !content) {
     output.innerHTML = "<p>Please enter both keyword and page content.</p>";
@@ -188,6 +184,7 @@ function analyze() {
   const verdict = getVerdict(keywordData.intent, pageData.intent);
   const confidence = getConfidence(keywordData, pageData);
   const fixes = getFixes(keywordData.intent, pageData.intent);
+  const angles = detectContentAngles(content);
 
   output.innerHTML = `
     <div class="result ${verdict.class}">
@@ -205,96 +202,3 @@ function analyze() {
         <span class="badge ${pageData.intent.toLowerCase()}">${pageData.intent}</span>
       </p>
       <ul>${pageData.reasons.map(r => `<li>${r}</li>`).join("")}</ul>
-
-      <h3>How to Fix This</h3>
-      <ul>${fixes.map(f => `<li>${f}</li>`).join("")}</ul>
-    </div>
-  `;
-
-  resetButton(button);
-}
-
-function resetButton(btn) {
-  btn.disabled = false;
-  btn.textContent = "Analyze Intent";
-}
-
-/* =========================
-   INTENT DETECTION
-   ========================= */
-
-function detectKeywordIntent(keyword) {
-  const transactional = ["buy","pricing","price","cost","sign up","download","trial"];
-  const commercial = ["best","top","vs","compare","comparison","tools","software","review","benefits"];
-
-  for (let w of transactional) {
-    if (keyword.includes(w)) return { intent: "Transactional", reasons: ["Transactional modifier detected"] };
-  }
-
-  for (let w of commercial) {
-    if (keyword.includes(w)) return { intent: "Commercial", reasons: ["Commercial modifier detected"] };
-  }
-
-  return { intent: "Informational", reasons: ["No buying or comparison modifiers found"] };
-}
-
-function detectPageIntent(content) {
-  const transactional = ["buy","pricing","sign up","get started","money-back","order"];
-  const commercial = ["compare","best","vs","alternatives","features","benefits","reviews"];
-
-  for (let w of transactional) {
-    if (content.includes(w)) return { intent: "Transactional", reasons: ["Transactional language detected"] };
-  }
-
-  for (let w of commercial) {
-    if (content.includes(w)) return { intent: "Commercial", reasons: ["Evaluation or comparison language detected"] };
-  }
-
-  return { intent: "Informational", reasons: ["Content is primarily educational"] };
-}
-
-function getVerdict(k, p) {
-  if (k === p) return { label: "🟢 Intent Match", class: "match" };
-  if (k === "Informational" || k === "Transactional") {
-    return { label: "🔴 Strong Mismatch", class: "mismatch" };
-  }
-  return { label: "🟡 Partial Mismatch", class: "partial" };
-}
-
-function getFixes(k, p) {
-  if (k === p) return ["Your content already matches the search intent."];
-
-  if (k === "Informational") {
-    return [
-      "Remove pricing and sales language",
-      "Focus on explanations and education",
-      "Add FAQs and examples"
-    ];
-  }
-
-  if (k === "Commercial") {
-    return [
-      "Add comparisons and benefits",
-      "Mention alternatives or options",
-      "Reduce direct selling"
-    ];
-  }
-
-  return [
-    "Add pricing or offers",
-    "Use strong CTAs",
-    "Optimize for conversion"
-  ];
-}
-
-function getConfidence(kd, pd) {
-  let score = kd.reasons.length + pd.reasons.length;
-  if (kd.intent === "Transactional" || pd.intent === "Transactional") score++;
-  if (score >= 3) return "High";
-  if (score === 2) return "Medium";
-  return "Low";
-}
-</script>
-
-</body>
-</html>
