@@ -11,171 +11,159 @@
   </script>
 
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Search Intent Mismatch Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     :root {
-      --primary: #1a73e8;
-      --bg-dark: #0b1d33;
-      --bg-dark-2: #102a44;
-      --card: #ffffff;
-      --border: #e0e3e7;
-      --text: #202124;
-      --muted: #5f6368;
-      --success: #137333;
-      --warning: #ea8600;
-      --danger: #d93025;
+      --primary:#1a73e8;
+      --bg:#f8f9fa;
+      --card:#ffffff;
+      --border:#e0e3e7;
+      --text:#202124;
+      --muted:#5f6368;
+      --success:#137333;
+      --warning:#ea8600;
+      --danger:#d93025;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing:border-box; }
 
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f8f9fa;
-      color: var(--text);
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
     }
 
-    /* ===== HERO (SAFE, SOLID) ===== */
     .hero {
-      background: linear-gradient(135deg, var(--bg-dark), var(--bg-dark-2));
-      padding: 80px 16px 120px;
-      color: white;
-      text-align: center;
+      background:linear-gradient(135deg,#0b1d33,#102a44);
+      padding:72px 16px 120px;
+      text-align:center;
+      color:#fff;
     }
 
     .hero h1 {
-      font-size: 40px;
-      margin-bottom: 16px;
-      font-weight: 700;
-    }
-
-    .hero h1 span {
-      color: #8ab4f8;
+      font-size:38px;
+      margin-bottom:14px;
+      font-weight:700;
     }
 
     .hero p {
-      max-width: 720px;
-      margin: 0 auto;
-      font-size: 18px;
-      color: #cbd5e1;
+      max-width:720px;
+      margin:0 auto;
+      font-size:18px;
+      color:#cbd5e1;
     }
 
-    /* ===== FORM CARD ===== */
     .form-wrapper {
-      max-width: 760px;
-      margin: -80px auto 48px;
-      padding: 0 16px;
+      max-width:760px;
+      margin:-80px auto 40px;
+      padding:0 16px;
     }
 
     .card {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 28px;
-      border: 1px solid var(--border);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+      background:var(--card);
+      border-radius:16px;
+      padding:28px;
+      border:1px solid var(--border);
+      box-shadow:0 16px 40px rgba(0,0,0,0.15);
     }
 
     label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:6px;
     }
 
     input, textarea {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-size: 15px;
+      width:100%;
+      padding:14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      font-size:15px;
     }
 
     textarea {
-      min-height: 160px;
-      resize: vertical;
+      min-height:160px;
+      resize:vertical;
     }
 
     .actions {
-      text-align: center;
-      margin-top: 24px;
+      text-align:center;
+      margin-top:24px;
     }
 
     button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 36px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 999px;
-      cursor: pointer;
-      min-width: 220px;
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      padding:14px 36px;
+      font-size:16px;
+      font-weight:600;
+      border-radius:999px;
+      cursor:pointer;
+      min-width:220px;
     }
 
     button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      opacity:.6;
+      cursor:not-allowed;
     }
 
-    /* ===== RESULTS ===== */
     .page {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 0 16px 64px;
+      max-width:980px;
+      margin:0 auto;
+      padding:0 16px 64px;
     }
 
     .result {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 28px;
-      border: 1px solid var(--border);
-      margin-top: 32px;
+      background:var(--card);
+      border-radius:14px;
+      padding:28px;
+      border:1px solid var(--border);
+      margin-top:32px;
     }
 
-    .match { border-left: 6px solid var(--success); }
-    .partial { border-left: 6px solid var(--warning); }
-    .mismatch { border-left: 6px solid var(--danger); }
+    .match { border-left:6px solid var(--success); }
+    .partial { border-left:6px solid var(--warning); }
+    .mismatch { border-left:6px solid var(--danger); }
 
     .badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-left: 8px;
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+      margin-left:8px;
     }
 
     .informational { background:#e8f0fe; color:#174ea6; }
     .commercial { background:#fef7e0; color:#8d6e00; }
     .transactional { background:#f3e8fd; color:#5b2dab; }
 
-    .section {
-      margin-top: 20px;
-    }
+    .section { margin-top:20px; }
 
     footer {
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 64px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:64px;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HERO -->
 <section class="hero">
-  <h1>Search Intent <span>Mismatch Checker</span></h1>
+  <h1>Your content might not match search intent</h1>
   <p>
-    Instantly check whether your page content aligns with the real search intent
-    behind any keyword — and learn how to fix it.
+    Instantly compare your keyword and page content to uncover intent mismatches
+    that prevent rankings — and learn how to fix them.
   </p>
 </section>
 
-<!-- FORM -->
 <div class="form-wrapper">
   <div class="card">
     <label>Target Keyword</label>
@@ -190,32 +178,39 @@
   </div>
 </div>
 
-<!-- RESULTS -->
 <div class="page">
   <div id="output"></div>
-
   <footer>
-    Built for SEO professionals · Runs entirely in your browser · No data stored
+    Runs entirely in your browser · No data stored
   </footer>
 </div>
 
 <script>
-document.getElementById("analyzeBtn").addEventListener("click", analyze);
+const analyzeBtn = document.getElementById("analyzeBtn");
+const keywordInput = document.getElementById("keyword");
+const contentInput = document.getElementById("content");
+const output = document.getElementById("output");
+
+analyzeBtn.addEventListener("click", analyze);
+
+// 🔥 KEY UPDATE: reset results when user edits input
+[keywordInput, contentInput].forEach(el => {
+  el.addEventListener("input", () => {
+    output.innerHTML = "";
+  });
+});
 
 function analyze() {
-  const btn = document.getElementById("analyzeBtn");
-  const output = document.getElementById("output");
-
-  btn.disabled = true;
-  btn.textContent = "Analyzing…";
+  analyzeBtn.disabled = true;
+  analyzeBtn.textContent = "Analyzing…";
   output.innerHTML = "";
 
-  const keyword = document.getElementById("keyword").value.toLowerCase().trim();
-  const content = document.getElementById("content").value.toLowerCase().trim();
+  const keyword = keywordInput.value.toLowerCase().trim();
+  const content = contentInput.value.toLowerCase().trim();
 
   if (!keyword || !content) {
     output.innerHTML = "<div class='result'>Please enter both keyword and content.</div>";
-    reset(btn);
+    resetButton();
     return;
   }
 
@@ -252,49 +247,63 @@ function analyze() {
     </div>
   `;
 
-  reset(btn);
+  resetButton();
 }
 
-function reset(btn) {
-  btn.disabled = false;
-  btn.textContent = "Analyze Intent";
+function resetButton() {
+  analyzeBtn.disabled = false;
+  analyzeBtn.textContent = "Analyze Intent";
 }
+
+/* -------- Intent Logic -------- */
 
 function detectKeywordIntent(k) {
-  const t = ["buy","price","pricing","sign up","download"];
-  const c = ["best","compare","vs","review","tools","benefits"];
-  for (let w of t) if (k.includes(w)) return { intent:"Transactional" };
-  for (let w of c) if (k.includes(w)) return { intent:"Commercial" };
-  return { intent:"Informational" };
+  const t=["buy","price","pricing","sign up","download"];
+  const c=["best","compare","vs","review","tools","benefits"];
+  for (let w of t) if (k.includes(w)) return {intent:"Transactional"};
+  for (let w of c) if (k.includes(w)) return {intent:"Commercial"};
+  return {intent:"Informational"};
 }
 
 function detectPageIntent(c) {
-  const t = ["buy","pricing","money-back","order"];
-  const m = ["compare","vs","features","benefits"];
-  for (let w of t) if (c.includes(w)) return { intent:"Transactional" };
-  for (let w of m) if (c.includes(w)) return { intent:"Commercial" };
-  return { intent:"Informational" };
+  const t=["buy","pricing","money-back","order"];
+  const m=["compare","vs","features","benefits"];
+  for (let w of t) if (c.includes(w)) return {intent:"Transactional"};
+  for (let w of m) if (c.includes(w)) return {intent:"Commercial"};
+  return {intent:"Informational"};
 }
 
 function getVerdict(k,p) {
-  if (k === p) return { label:"Intent match", class:"match" };
-  if (k === "Informational" || k === "Transactional")
-    return { label:"Strong mismatch", class:"mismatch" };
-  return { label:"Partial mismatch", class:"partial" };
+  if (k===p) return {label:"Intent match",class:"match"};
+  if (k==="Informational"||k==="Transactional")
+    return {label:"Strong mismatch",class:"mismatch"};
+  return {label:"Partial mismatch",class:"partial"};
 }
 
 function getFixes(k,p) {
-  if (k === p) return ["Content already aligns with intent"];
-  if (k === "Informational") return ["Remove sales language","Add explanations","Focus on education"];
-  if (k === "Commercial") return ["Add comparisons","Mention alternatives","Reduce sales pressure"];
-  return ["Add CTAs","Add pricing","Optimize for conversion"];
+  if (k===p) return ["Content already aligns with intent"];
+  if (k==="Informational") return [
+    "Remove sales language",
+    "Add explanations and FAQs",
+    "Focus on education"
+  ];
+  if (k==="Commercial") return [
+    "Add comparisons",
+    "Mention alternatives",
+    "Reduce sales pressure"
+  ];
+  return [
+    "Add CTAs",
+    "Add pricing",
+    "Optimize for conversion"
+  ];
 }
 
 function detectContentAngles(c) {
-  const a = [];
+  const a=[];
   if (c.includes("benefit")) a.push("Explaining benefits");
   if (c.includes("compare")) a.push("Comparing options");
-  if (c.includes("beginner")) a.push("Beginner-friendly guidance");
+  if (c.includes("beginner")) a.push("Beginner guidance");
   if (c.includes("invest")) a.push("Investment education");
   if (c.includes("risk")) a.push("Risk and safety discussion");
   return a.slice(0,4);
