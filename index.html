@@ -170,7 +170,11 @@ function analyze() {
   button.innerText = "Analyzing...";
 
   const keyword = document.getElementById('keyword').value.toLowerCase().trim();
-  const content = document.getElementById('content').value.toLowerCase().trim();
+  const rawContent = document.getElementById('content').value;
+const content = rawContent
+  .toLowerCase()
+  .slice(0, 6000); // limit processing size (~1000–1200 words)
+
 
   if (!keyword || !content) {
     output.innerHTML = "<p>Please enter both keyword and page content.</p>";
